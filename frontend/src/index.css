@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+:root {
+  --background-base: #f8fafc; /* Very soft neutral */
+  --surface-color: #ffffff;
+  
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  
+  --accent-primary: #3b82f6;
+  --accent-primary-hover: #2563eb;
+  
+  --action-positive: #10b981;
+  --action-positive-hover: #059669;
+  
+  --action-rethink: #f43f5e;
+  --action-rethink-hover: #e11d48;
+
+  --border-delicate: #e2e8f0;
+  
+  --radius-soft: 12px;
+  --shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.025);
+  --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.025);
+  
+  --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@layer base {
+  body {
+    background-color: var(--background-base);
+    color: var(--text-primary);
+    font-family: inherit; /* Inherit modern system typography */
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* === Semantic Vibe Classes (Fulfilling visual description constraint) === */
+
+.layout-professional-spacing {
+  @apply max-w-5xl mx-auto px-6 py-10;
+}
+
+.surface-delicate-elevation {
+  background-color: var(--surface-color);
+  border-radius: var(--radius-soft);
+  box-shadow: var(--shadow-subtle);
+  border: 1px solid var(--border-delicate);
+  transition: var(--transition-smooth);
+}
+
+.surface-delicate-elevation:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+.typography-clean-heading {
+  color: var(--text-primary);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.typography-soft-body {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.input-soft-border-focus {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-soft);
+  border: 1px solid var(--border-delicate);
+  background-color: var(--background-base);
+  color: var(--text-primary);
+  transition: var(--transition-smooth);
+  outline: none;
+}
+
+.input-soft-border-focus:focus {
+  background-color: var(--surface-color);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* Base button for micro-interactions */
+.btn-delicate-interaction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: calc(var(--radius-soft) - 4px);
+  font-weight: 600;
+  transition: var(--transition-smooth);
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.btn-delicate-interaction:active {
+  transform: scale(0.97);
+}
+
+.btn-delicate-interaction:disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.btn-primary-action {
+  background-color: var(--accent-primary);
+  color: #fff;
+}
+.btn-primary-action:hover {
+  background-color: var(--accent-primary-hover);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-action-positive {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--action-positive);
+}
+.btn-action-positive:hover {
+  background-color: var(--action-positive);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+.btn-action-rethink {
+  background-color: rgba(244, 63, 94, 0.1);
+  color: var(--action-rethink);
+}
+.btn-action-rethink:hover {
+  background-color: var(--action-rethink);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(244, 63, 94, 0.25);
+}
+
+.link-subtle-hover {
+  color: var(--accent-primary);
+  text-decoration: none;
+  transition: var(--transition-smooth);
+}
+.link-subtle-hover:hover {
+  color: var(--accent-primary-hover);
+  text-decoration: underline;
+}
