@@ -3,44 +3,35 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const admin = require('firebase-admin');
-
-let serviceAccount;
-if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-} else {
-  serviceAccount = require('./serviceAccountKey.json');
-}
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+const topicRoutes = require('./routes/topicRoutes');
 
 const app = express();
 
-app.use(cors({ origin: process.env.FRONTEND_URL }));
+if (!admin.apps.length) {
+  let cert;
+  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+    cert = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  } else {
+    cert = require('./serviceAccountKey.json');
+  }
+  admin.initializeApp({
+    credential: admin.credential.cert(cert)
+  });
+}
+
 app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.status(200).json({ status: 'Server is running', message: 'Welcome to SRS Backend API' });
-});
-
-const topicRoutes = require('./routes/topicRoutes');
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  credentials: true
+}));
 
 app.use('/api/topics', topicRoutes);
 
-const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI;
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("DB Connected"))
+  .catch(e => console.error("DB Error:", e));
 
-if (!MONGO_URI) {
-  console.error('FATAL ERROR: MONGO_URI is not defined in .env');
-  process.exit(1);
-}
-
-mongoose.connect(MONGO_URI)
-  .then(() => {
-    console.log('MongoDB connection established successfully.');
-    
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-  })
-  .catch((err) => {
-    console.error('MongoDB connection error:', err);
-  });
+const port = process.env.PORT || 5000;
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server live on ${port}`);
+});
