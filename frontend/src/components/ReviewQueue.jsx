@@ -9,8 +9,6 @@ export default function ReviewQueue({ topics, setTopics }) {
     setUpdatingId(id);
     try {
       await api.put(`/topics/${id}/review`, { isSuccess });
-      
-      // Artificial delay purely for smooth button animation feedback
       setTimeout(() => {
         setTopics(prev => prev.filter(topic => topic._id !== id));
         setUpdatingId(null);
@@ -23,7 +21,6 @@ export default function ReviewQueue({ topics, setTopics }) {
     }
   };
 
-  // Zero-State UI
   if (topics.length === 0) {
     return (
       <div className="surface-delicate-elevation text-center p-12 mt-8 flex flex-col items-center justify-center">
@@ -45,7 +42,6 @@ export default function ReviewQueue({ topics, setTopics }) {
           <Compass className="w-6 h-6" style={{ color: 'var(--accent-primary)' }} />
           Fuel Your Revision Arsenal
         </h2>
-        {/* Subtle visualization of current load */}
         <div className="typography-soft-body flex items-center bg-white px-4 py-1.5 rounded-full border border-gray-200 shadow-sm text-sm font-medium">
           <span className="w-2 h-2 rounded-full mr-2 animate-pulse" style={{ backgroundColor: 'var(--action-rethink)' }}></span>
           {topics.length} Task{topics.length !== 1 ? 's' : ''} Remaining
@@ -98,12 +94,7 @@ export default function ReviewQueue({ topics, setTopics }) {
                 className="btn-delicate-interaction btn-action-positive flex-1"
                 title="Double the current interval"
               >
-                {updatingId === topic._id ? (
-                   <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                   <CheckCircle2 className="w-4 h-4" />
-                )}
-                Got It
+                {updatingId === topic._id ? 'Updating...' : <><CheckCircle2 className="w-4 h-4" /> Got It</>}
               </button>
             </div>
           </div>
