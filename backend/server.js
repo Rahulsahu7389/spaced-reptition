@@ -25,6 +25,10 @@ app.use(cors({
   credentials: true
 }));
 
+app.get('/', (req, res) => {
+  res.send('SRS Backend is awake and running!');
+});
+
 app.use('/api/topics', topicRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
