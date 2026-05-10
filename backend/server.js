@@ -4,15 +4,15 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const admin = require('firebase-admin');
 
-try {
-  const serviceAccount = require(process.env.FIREBASE_SERVICE_ACCOUNT_PATH || './serviceAccountKey.json');
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
-  console.log('Firebase Admin Initialized successfully.');
-} catch (error) {
-  console.error('Error initializing Firebase Admin:', error.message);
+let serviceAccount;
+if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+} else {
+  serviceAccount = require('./serviceAccountKey.json');
 }
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
 const app = express();
 
