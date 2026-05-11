@@ -2,20 +2,21 @@ import React, { useState, useEffect } from 'react';
 import api from '../api/axiosConfig';
 import AddTopicForm from './AddTopicForm';
 import ReviewQueue from './ReviewQueue';
-import { useAuth } from '../context/AuthContext';
+import Toast from './Toast';
+import useToast from '../hooks/useToast';
 import { Loader2 } from 'lucide-react';
 
 export default function Dashboard() {
-  const { currentUser } = useAuth();
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const { toasts, show, remove } = useToast();
 
   useEffect(() => {
-    const fetchTopics = async () => {
+    const fetch = async () => {
       try {
-        const response = await api.get('/topics/due');
-        setTopics(response.data);
+        const res = await api.get('/topics/due');
+        setTopics(res.data);
       } catch (err) {
         console.error('Error fetching due topics:', err);
         setError('Failed to securely link to Arsenal database.');
@@ -23,13 +24,11 @@ export default function Dashboard() {
         setLoading(false);
       }
     };
-
-    fetchTopics();
-  }, []); // Only fetch once on mount
+    fetch();
+  }, []);
 
   const handleTopicAdded = (newTopic) => {
-    // Optionally trigger a toast notification here smoothly
-    // We do not inject it into `topics` instantly since it is not "due" yet anyway.
+    show(`"${newTopic.title}" added to your arsenal!`, 'success');
   };
 
   return (
@@ -46,8 +45,10 @@ export default function Dashboard() {
           <p className="typography-soft-body font-medium tracking-wide">Syncing Arsenal...</p>
         </div>
       ) : (
-        <ReviewQueue topics={topics} setTopics={setTopics} />
+        <ReviewQueue topics={topics} setTopics={setTopics} showToast={show} />
       )}
+
+      <Toast toasts={toasts} remove={remove} />
     </div>
   );
 }

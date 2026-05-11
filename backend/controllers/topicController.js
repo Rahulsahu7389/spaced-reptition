@@ -1,8 +1,4 @@
 const Topic = require('../models/Topic');
-
-// @desc    Create a new topic
-// @route   POST /api/topics
-// @access  Private
 const addTopic = async (req, res) => {
   try {
     const { title, notesLink } = req.body;
@@ -26,26 +22,21 @@ const addTopic = async (req, res) => {
   }
 };
 
-// @desc    Get all due topics for the user (only active ones)
-// @route   GET /api/topics/due
-// @access  Private
 const getDueTopics = async (req, res) => {
   try {
+    const eod = new Date();
+    eod.setHours(23, 59, 59, 999);
     const dueTopics = await Topic.find({
       userId: req.user.uid,
-      nextReview: { $lte: new Date() },
-      isActive: true,   // Only fetch active topics
+      nextReview: { $lte: eod },
+      isActive: true,
     }).sort({ nextReview: 1 });
-
     res.status(200).json(dueTopics);
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
 
-// @desc    Get ALL topics for the user (for Topic Manager)
-// @route   GET /api/topics
-// @access  Private
 const getAllTopics = async (req, res) => {
   try {
     const topics = await Topic.find({ userId: req.user.uid }).sort({ createdAt: -1 });
@@ -55,9 +46,6 @@ const getAllTopics = async (req, res) => {
   }
 };
 
-// @desc    Review a topic (SRS Engine)
-// @route   PUT /api/topics/:id/review
-// @access  Private
 const reviewTopic = async (req, res) => {
   try {
     const { isSuccess } = req.body;
@@ -84,9 +72,6 @@ const reviewTopic = async (req, res) => {
   }
 };
 
-// @desc    Toggle a topic's active status (archive/unarchive)
-// @route   PUT /api/topics/:id/toggle-status
-// @access  Private
 const toggleTopicStatus = async (req, res) => {
   try {
     const topic = await Topic.findOne({ _id: req.params.id, userId: req.user.uid });
@@ -100,10 +85,21 @@ const toggleTopicStatus = async (req, res) => {
   }
 };
 
+const deleteTopic = async (req, res) => {
+  try {
+    const topic = await Topic.findOneAndDelete({ _id: req.params.id, userId: req.user.uid });
+    if (!topic) return res.status(404).json({ message: 'Topic not found or unauthorized' });
+    res.status(200).json({ message: 'Topic deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+};
+
 module.exports = {
   addTopic,
   getDueTopics,
   getAllTopics,
   reviewTopic,
   toggleTopicStatus,
+  deleteTopic,
 };

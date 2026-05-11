@@ -6,6 +6,7 @@ const {
   getAllTopics,
   reviewTopic,
   toggleTopicStatus,
+  deleteTopic,
 } = require('../controllers/topicController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -23,5 +24,8 @@ router.put('/:id/review', protect, reviewTopic);
 
 // @route   PUT /api/topics/:id/toggle-status
 router.put('/:id/toggle-status', protect, toggleTopicStatus);
+
+// @route   DELETE /api/topics/:id
+router.delete('/:id', protect, deleteTopic);
 
 module.exports = router;

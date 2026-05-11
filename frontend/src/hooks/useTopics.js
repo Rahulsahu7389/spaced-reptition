@@ -45,5 +45,16 @@ export function useTopics() {
     }
   };
 
-  return { topics, loading, error, toggleStatus, refetch: fetchTopics };
+  const deleteTopic = async (topicId) => {
+    try {
+      await api.delete(`/topics/${topicId}`);
+      setTopics(prev => prev.filter(t => t._id !== topicId));
+      return true;
+    } catch (err) {
+      console.error('Delete failed:', err);
+      return false;
+    }
+  };
+
+  return { topics, loading, error, toggleStatus, deleteTopic, refetch: fetchTopics };
 }
